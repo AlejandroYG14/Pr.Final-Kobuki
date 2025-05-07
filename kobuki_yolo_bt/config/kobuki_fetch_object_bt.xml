@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<root main_tree_to_execute="FetchObjectTree">
+  <!-- Behavior Tree principal para buscar y recoger un objeto solicitado -->
+  <BehaviorTree ID="FetchObjectTree">
+    <Sequence name="main_sequence">
+      <!-- Primera fase: Escuchar comando de voz y buscar objeto -->
+      <ReactiveSequence name="find_phase">
+        <Condition ID="ObjectDetected" object="{requested_object}"/>
+        <Action ID="FindObject" object="{requested_object}"/>
+      </ReactiveSequence>
+      
+      <!-- Segunda fase: Ir al objeto, recogerlo -->
+      <ReactiveSequence name="fetch_phase">
+        <Fallback>
+          <Condition ID="ObjectPicked"/>
+          <Sequence>
+            <Action ID="GoToObject" object="{requested_object}"/>
+            <Action ID="PickObject" object="{requested_object}"/>
+          </Sequence>
+        </Fallback>
+      </ReactiveSequence>
+      
+      <!-- Tercera fase: Llevar el objeto a la estación correcta -->
+      <ReactiveSequence name="deliver_phase">
+        <Fallback>
+          <Condition ID="ObjectPlaced"/>
+          <Sequence>
+            <Action ID="GoToStation" station_id="{target_station}"/>
+            <Condition ID="AtStation" station_id="{target_station}"/>
+            <Action ID="PlaceObject"/>
+          </Sequence>
+        </Fallback>
+      </ReactiveSequence>
+    </Sequence>
+  </BehaviorTree>
+</root> 
