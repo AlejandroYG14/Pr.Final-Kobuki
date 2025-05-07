@@ -1,4 +1,32 @@
 stations:
+  - id: "station1"
+    pose:
+      x: 1.0
+      y: 0.0
+      z: 0.0
+      qx: 0.0
+      qy: 0.0
+      qz: 0.0
+      qw: 1.0
+  - id: "station2"
+    pose:
+      x: 2.0
+      y: 0.0
+      z: 0.0
+      qx: 0.0
+      qy: 0.0
+      qz: 0.0
+      qw: 1.0
+  - id: "station3"
+    pose:
+      x: 3.0
+      y: 0.0
+      z: 0.0
+      qx: 0.0
+      qy: 0.0
+      qz: 0.0
+      qw: 1.0
+
   - id: 1
     name: "Estación 1"
     pose:

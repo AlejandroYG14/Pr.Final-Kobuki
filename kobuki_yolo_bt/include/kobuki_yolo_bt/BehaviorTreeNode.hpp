@@ -12,151 +12,49 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef KOBUKI_YOLO_BT__BEHAVIORTREENODE_HPP_
-#define KOBUKI_YOLO_BT__BEHAVIORTREENODE_HPP_
+#ifndef KOBUKI_YOLO_BT__BEHAVIOR_TREE_NODE_HPP_
+#define KOBUKI_YOLO_BT__BEHAVIOR_TREE_NODE_HPP_
 
-#include <memory>
 #include <string>
+#include <memory>
 
-#include "rclcpp/rclcpp.hpp"
-#include "std_msgs/msg/string.hpp"
-#include "std_msgs/msg/int32.hpp"
-#include "std_msgs/msg/bool.hpp"
-
-#include "behaviortree_cpp_v3/behavior_tree.h"
-#include "behaviortree_cpp_v3/bt_factory.h"
-#include "behaviortree_cpp_v3/utils/shared_library.h"
+#include <rclcpp/rclcpp.hpp>
+#include <behaviortree_cpp_v3/action_node.h>
+#include <std_msgs/msg/string.hpp>
+#include <geometry_msgs/msg/pose_stamped.hpp>
+#include <rclcpp_action/rclcpp_action.hpp>
+#include <nav2_msgs/action/navigate_to_pose.hpp>
 
 namespace kobuki_yolo_bt
 {
 
-class BehaviorTreeNode : public rclcpp::Node
+class BehaviorTreeNode : public BT::StatefulActionNode
 {
 public:
-  BehaviorTreeNode();
-  
+    BehaviorTreeNode(const std::string& name, const BT::NodeConfiguration& config);
+
+    static BT::PortsList providedPorts()
+    {
+        return { 
+            BT::InputPort<std::string>("object"),
+            BT::OutputPort<std::string>("result")
+        };
+    }
+
+    BT::NodeStatus onStart() override;
+    BT::NodeStatus onRunning() override;
+    void onHalted() override;
+
 private:
-  // Callbacks
-  void voice_command_callback(const std_msgs::msg::String::ConstSharedPtr & msg);
-  void robot_status_callback(const std_msgs::msg::String::ConstSharedPtr & msg);
-  void object_detection_callback(const std_msgs::msg::String::ConstSharedPtr & msg);
-  void object_picked_callback(const std_msgs::msg::String::ConstSharedPtr & msg);
-  void object_placed_callback(const std_msgs::msg::String::ConstSharedPtr & msg);
-  void station_status_callback(const std_msgs::msg::String::ConstSharedPtr & msg);
-  
-  // Behavior Tree
-  void initialize_behavior_tree();
-  void create_custom_nodes();
-  void tick_behavior_tree();
-  
-  // Suscripciones
-  rclcpp::Subscription<std_msgs::msg::String>::SharedPtr voice_command_sub_;
-  rclcpp::Subscription<std_msgs::msg::String>::SharedPtr robot_status_sub_;
-  rclcpp::Subscription<std_msgs::msg::String>::SharedPtr object_detection_sub_;
-  rclcpp::Subscription<std_msgs::msg::String>::SharedPtr object_picked_sub_;
-  rclcpp::Subscription<std_msgs::msg::String>::SharedPtr object_placed_sub_;
-  rclcpp::Subscription<std_msgs::msg::String>::SharedPtr station_status_sub_;
-  
-  // Publicadores
-  rclcpp::Publisher<std_msgs::msg::String>::SharedPtr target_object_pub_;
-  rclcpp::Publisher<std_msgs::msg::Int32>::SharedPtr target_station_pub_;
-  rclcpp::Publisher<std_msgs::msg::Bool>::SharedPtr enable_detection_pub_;
-  
-  // Timer
-  rclcpp::TimerBase::SharedPtr timer_;
-  
-  // Behavior Tree
-  std::unique_ptr<BT::Tree> bt_;
-  BT::BehaviorTreeFactory bt_factory_;
-  
-  // Blackboard para compartir información entre nodos
-  BT::Blackboard::Ptr blackboard_;
-  
-  // Estado
-  std::string requested_object_;
-  std::string detected_object_;
-  std::string current_robot_status_;
-  std::string current_station_status_;
-  bool robot_has_object_;
-  int current_station_;
+    void object_request_callback(const std_msgs::msg::String::SharedPtr msg);
+
+    // Variables
+    std::shared_ptr<rclcpp::Node> node_;
+    rclcpp::Subscription<std_msgs::msg::String>::SharedPtr object_request_sub_;
+    bool object_request_received_ = false;
+    std::string requested_object_;
 };
 
-// Nodos personalizados de Behavior Tree
+} // namespace kobuki_yolo_bt
 
-// Action Nodes
-class FindObject : public BT::SyncActionNode
-{
-public:
-  FindObject(const std::string & name, const BT::NodeConfiguration & config);
-  BT::NodeStatus tick() override;
-  static BT::PortsList providedPorts();
-};
-
-class GoToObject : public BT::SyncActionNode
-{
-public:
-  GoToObject(const std::string & name, const BT::NodeConfiguration & config);
-  BT::NodeStatus tick() override;
-  static BT::PortsList providedPorts();
-};
-
-class PickObject : public BT::SyncActionNode
-{
-public:
-  PickObject(const std::string & name, const BT::NodeConfiguration & config);
-  BT::NodeStatus tick() override;
-  static BT::PortsList providedPorts();
-};
-
-class GoToStation : public BT::SyncActionNode
-{
-public:
-  GoToStation(const std::string & name, const BT::NodeConfiguration & config);
-  BT::NodeStatus tick() override;
-  static BT::PortsList providedPorts();
-};
-
-class PlaceObject : public BT::SyncActionNode
-{
-public:
-  PlaceObject(const std::string & name, const BT::NodeConfiguration & config);
-  BT::NodeStatus tick() override;
-  static BT::PortsList providedPorts();
-};
-
-// Condition Nodes
-class ObjectDetected : public BT::ConditionNode
-{
-public:
-  ObjectDetected(const std::string & name, const BT::NodeConfiguration & config);
-  BT::NodeStatus tick() override;
-  static BT::PortsList providedPorts();
-};
-
-class ObjectPicked : public BT::ConditionNode
-{
-public:
-  ObjectPicked(const std::string & name, const BT::NodeConfiguration & config);
-  BT::NodeStatus tick() override;
-  static BT::PortsList providedPorts();
-};
-
-class AtStation : public BT::ConditionNode
-{
-public:
-  AtStation(const std::string & name, const BT::NodeConfiguration & config);
-  BT::NodeStatus tick() override;
-  static BT::PortsList providedPorts();
-};
-
-class ObjectPlaced : public BT::ConditionNode
-{
-public:
-  ObjectPlaced(const std::string & name, const BT::NodeConfiguration & config);
-  BT::NodeStatus tick() override;
-  static BT::PortsList providedPorts();
-};
-
-}  // namespace kobuki_yolo_bt
-
-#endif  // KOBUKI_YOLO_BT__BEHAVIORTREENODE_HPP_ 
+#endif // KOBUKI_YOLO_BT__BEHAVIOR_TREE_NODE_HPP_ 
