@@ -1,4 +1,4 @@
-# Proyecto Final Kobuki - Navigation y Detección de Personas
+# Proyecto final Kobuki - Navegación y detección de personas
 
 Este proyecto implementa un sistema que permite al robot Kobuki navegar usando Nav2 hasta un punto específico, detectar personas usando YOLO, y volver al punto de origen.
 
@@ -53,3 +53,7 @@ Se pueden modificar los siguientes parámetros:
 
 ### Mapa usado
 ![map](https://github.com/user-attachments/assets/e44a9900-7fe4-4ade-adb9-a51916fc8e95)
+
+### Vídeo de demostración
+https://github.com/user-attachments/assets/e5415a51-c798-4c5d-8ebe-df0e736daf5b
+
