@@ -50,3 +50,6 @@ Este proyecto implementa un sistema que permite al robot Kobuki navegar usando N
 Se pueden modificar los siguientes parámetros:
 - Coordenadas del waypoint en `src/bt_nav_main.cpp`
 - Parámetros de control PID en `src/bt_nav/PIDController.cpp`
+
+### Mapa usado
+![map](https://github.com/user-attachments/assets/e44a9900-7fe4-4ade-adb9-a51916fc8e95)
