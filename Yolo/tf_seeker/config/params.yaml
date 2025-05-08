@@ -1,3 +1,0 @@
-tf_publisher:
-  ros__parameters:
-    target_class: "person"
