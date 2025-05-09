@@ -45,9 +45,9 @@ ros2 run bt_nav tf_publisher #Para buscar a la persona y publicar tf
 ros2 run bt_nav navigate #Para lanzar el programa como tal
 
 # El robot automáticamente:
-# 1. Navegará al waypoint (4.08, -7.84)
+# 1. Navegará al waypoint
 # 2. Buscará una persona
-# 3. Volverá al origen (0, 0)
+# 3. Volverá al origen
 ```
 
 ### Customización
