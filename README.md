@@ -37,7 +37,12 @@ Este proyecto implementa un sistema que permite al robot Kobuki navegar usando N
 
 ```bash
 # Lanzar el sistema completo
-
+ros2 launch kobuki kobuki.launch.py lidar_a2:=true astra:=true #Lanzar el kobuki
+ros2 launch kobuki navigation.launch.py map:=<path_to_your_map.yaml> #Para iniciar el mapa
+launch yolo_bringup yolo.launch.py #Iniciar el yolo
+ros2 launch camera detection3d_hsv.launch.py #Para iniciar la camara que va a pasar a 3d las transformaciones
+ros2 run bt_nav tf_publisher #Para buscar a la persona y publicar tf
+ros2 run bt_nav navigate #Para lanzar el programa como tal
 
 # El robot automáticamente:
 # 1. Navegará al waypoint (4.08, -7.84)
