@@ -15,8 +15,9 @@ TFPublisherNode::TFPublisherNode()
   transform_initialized_(false)
 {
 
-  std::cout << "Ingrese la clase objetivo (por ejemplo, bottle): ";
-  std::cin >> target_class_;
+  this->declare_parameter<std::string>("target_class", "person");  // valor por defecto
+  this->get_parameter("target_class", target_class_);
+
 
   publisher_bool_ = this->create_publisher<std_msgs::msg::Bool>("flag_topic", 10);
 
@@ -27,11 +28,6 @@ TFPublisherNode::TFPublisherNode()
     "detections_3d", 10,
     std::bind(&TFPublisherNode::detection_callback, this, std::placeholders::_1));
 
-    
-
-    auto bool_msg = std_msgs::msg::Bool();
-    bool_msg.data = true; 
-    publisher_bool_->publish(bool_msg);
 
   // Publica la transformada cada 50ms
   timer_publish_ = create_wall_timer(

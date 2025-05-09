@@ -2,13 +2,19 @@
 <root main_tree_to_execute="BehaviorTree">
     <!-- ////////// -->
     <BehaviorTree ID="BehaviorTree">
-        <Sequence>
-            <Action ID="GetWaypoint" waypoint="{wp}"/>
-            <Action ID="Move" goal="{wp}"/>
-            <Action ID="Seeker" />
-            <Action ID="GetOrigin" origin="{origin}"/>
-            <Action ID="Move" goal="{origin}"/>
-        </Sequence>
+        <Fallback name="MainWithRecovery">
+            <!-- Secuencia principal -->
+            <Sequence name="MainSequence">
+                <Action ID="GetWaypoint" waypoint="{wp}"/>
+                <Action ID="Move" goal="{wp}"/>
+                <Action ID="Seeker"/>
+            </Sequence>
+            <!-- Secuencia de recuperación -->
+            <Sequence name="RecoverySequence">
+                <Action ID="GetOrigin" origin="{origin}"/>
+                <Action ID="Move" goal="{origin}"/>
+            </Sequence>
+        </Fallback>
     </BehaviorTree>
     <!-- ////////// -->
     <TreeNodesModel>
@@ -21,9 +27,7 @@
         <Action ID="Move">
             <input_port name="goal"/>
         </Action>
-        <Action ID="Seeker">
-            <!-- No requiere puertos de entrada o salida -->
-        </Action>
+        <Action ID="Seeker"/>
     </TreeNodesModel>
     <!-- ////////// -->
 </root>
